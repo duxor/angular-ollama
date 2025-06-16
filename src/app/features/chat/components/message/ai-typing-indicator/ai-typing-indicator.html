@@ -1,0 +1,32 @@
+<div class="flex flex-col">
+  <div 
+    class="max-w-3xl md:max-w-4xl lg:max-w-5xl rounded-2xl p-4 md:p-5 lg:p-6 mb-1 md:mb-2 bg-gray-800 text-gray-100 rounded-tl-sm"
+  >
+    <!--#region Avatar and Name -->
+    <div class="flex items-center mb-2 md:mb-3">
+      <div 
+        class="w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 rounded-full flex items-center justify-center mr-2 md:mr-3 bg-purple-700"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 lg:h-7 lg:w-7 text-white" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z" />
+          <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z" />
+        </svg>
+      </div>
+      <div>
+        <div class="font-medium md:text-lg lg:text-xl">NexusChat</div>
+        <div class="text-xs md:text-sm lg:text-base opacity-70">{{ currentTime }}</div>
+      </div>
+    </div>
+    <!--#endregion Avatar and Name -->
+
+    <!--#region Loading Animation -->
+    <div class="whitespace-pre-wrap">
+      <div class="flex space-x-2 md:space-x-3 lg:space-x-4">
+        <div class="w-2 h-2 md:w-3 md:h-3 lg:w-4 lg:h-4 rounded-full bg-gray-400 animate-pulse"></div>
+        <div class="w-2 h-2 md:w-3 md:h-3 lg:w-4 lg:h-4 rounded-full bg-gray-400 animate-pulse" style="animation-delay: 0.2s"></div>
+        <div class="w-2 h-2 md:w-3 md:h-3 lg:w-4 lg:h-4 rounded-full bg-gray-400 animate-pulse" style="animation-delay: 0.4s"></div>
+      </div>
+    </div>
+    <!--#endregion Loading Animation -->
+  </div>
+</div>
