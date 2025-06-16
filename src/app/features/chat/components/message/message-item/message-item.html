@@ -1,0 +1,43 @@
+<div class="flex flex-col" [class.items-end]="isUser">
+  <div 
+    class="max-w-3xl md:max-w-4xl lg:max-w-5xl rounded-2xl p-4 md:p-5 lg:p-6 mb-1 md:mb-2"
+    [class.bg-blue-600]="isUser"
+    [class.bg-gray-800]="!isUser"
+    [class.text-white]="isUser"
+    [class.text-gray-100]="!isUser"
+    [class.rounded-tr-sm]="isUser"
+    [class.rounded-tl-sm]="!isUser"
+  >
+    <!--#region Avatar and Name -->
+    <div class="flex items-center mb-2">
+      <div 
+        class="w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 rounded-full flex items-center justify-center mr-2 md:mr-3"
+        [class.bg-blue-700]="isUser"
+        [class.bg-purple-700]="!isUser"
+      >
+        @if (isUser) {
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 lg:h-7 lg:w-7 text-white" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+          </svg>
+        } @else {
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 lg:h-7 lg:w-7 text-white" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z" />
+            <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z" />
+          </svg>
+        }
+      </div>
+      <div>
+        <div class="font-medium md:text-lg lg:text-xl">{{ isUser ? 'You' : 'NexusChat' }}</div>
+        <div class="text-xs md:text-sm lg:text-base opacity-70">{{ formattedTime }}</div>
+      </div>
+    </div>
+    <!--#endregion Avatar and Name -->
+
+    <!--#region Message Content -->
+    <markdown
+      class="markdown-body whitespace-break-spaces"
+      [data]="message().content"
+    />
+    <!--#endregion Message Content -->
+  </div>
+</div>
