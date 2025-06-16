@@ -30,9 +30,9 @@ describe('ChatPage', () => {
     mockChatStore = jasmine.createSpyObj('ChatStore', 
       ['createNewSession', 'setActiveSession', 'deleteSession', 'sendMessage'],
       {
-        sessions: signal([mockSession]),
+        $sessions: signal([mockSession]),
         activeSession: signal(mockSession),
-        isLoading: signal(false)
+        $isLoading: signal(false)
       }
     );
 
@@ -65,12 +65,12 @@ describe('ChatPage', () => {
 
   it('should load available models on init', () => {
     expect(mockOllamaApi.getAvailableModels).toHaveBeenCalled();
-    // @ts-ignore: Accessing protected member in test
+    // @ts-expect-error: Accessing protected member in test
     expect(component.$availableModels()).toEqual(mockModels);
   });
 
   it('should initialize selected model from OllamaStore', () => {
-    // @ts-ignore: Accessing protected member in test
+    // @ts-expect-error: Accessing protected member in test
     expect(component.$selectedModel()).toBe('llama3.1');
   });
 
@@ -91,7 +91,7 @@ describe('ChatPage', () => {
 
   it('should save model when model is changed', () => {
     component.onModelChange('gemma3');
-    // @ts-ignore: Accessing protected member in test
+    // @ts-expect-error: Accessing protected member in test
     expect(component.$selectedModel()).toBe('gemma3');
     expect(mockOllamaStore.saveModel).toHaveBeenCalledWith('gemma3');
   });
@@ -116,7 +116,7 @@ describe('ChatPage', () => {
     component.ngOnInit();
 
     // Expect empty selected model
-    // @ts-ignore: Accessing protected member in test
+    // @ts-expect-error: Accessing protected member in test
     expect(component.$selectedModel()).toBe('');
   });
 
@@ -146,7 +146,7 @@ describe('ChatPage', () => {
     component.ngOnInit();
 
     // Should select first available model
-    // @ts-ignore: Accessing protected member in test
+    // @ts-expect-error: Accessing protected member in test
     expect(component.$selectedModel()).toBe(mockModels[0]);
   });
 });

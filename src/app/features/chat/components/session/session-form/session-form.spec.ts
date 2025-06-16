@@ -4,6 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { SessionForm } from './session-form';
 import { provideZonelessChangeDetection, signal } from '@angular/core';
 
+// Type for testing private methods
+interface SessionFormTest extends SessionForm {
+  focusInput(): void;
+}
+
 describe('SessionForm', () => {
   let component: SessionForm;
   let fixture: ComponentFixture<SessionForm>;
@@ -81,7 +86,8 @@ describe('SessionForm', () => {
   });
 
   it('should focus input after initialization', (done) => {
-    const focusSpy = spyOn<any>(component, 'focusInput').and.callThrough();
+    // @ts-expect-error: Accessing protected member in test
+    const focusSpy = spyOn<SessionFormTest>(component, 'focusInput').and.callThrough();
 
     component.ngAfterViewInit();
 
@@ -94,7 +100,8 @@ describe('SessionForm', () => {
 
   it('should focus input after submission', (done) => {
     const testMessage = 'Test message';
-    const focusSpy = spyOn<any>(component, 'focusInput');
+    // @ts-expect-error: Accessing protected member in test
+    const focusSpy = spyOn<SessionFormTest>(component, 'focusInput');
 
     // Set message
     component.$message = signal(testMessage);

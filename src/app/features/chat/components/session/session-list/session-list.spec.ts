@@ -124,7 +124,7 @@ describe('SessionList', () => {
 
     // Click the delete button of the first session
     const deleteButtons = fixture.debugElement.queryAll(By.css('[class*="hover:text-red-400"]'));
-    deleteButtons[0].triggerEventHandler('click', { stopPropagation: () => {} });
+    deleteButtons[0].triggerEventHandler('click', { stopPropagation: () => { /* Implementation to prevent event bubbling */ } });
 
     expect(deleteSessionSpy).toHaveBeenCalledWith('1');
   });

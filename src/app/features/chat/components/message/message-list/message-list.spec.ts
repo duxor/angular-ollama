@@ -116,7 +116,8 @@ describe('MessageList', () => {
     component = fixture.componentInstance;
 
     // Spy on the scrollToBottom method
-    const scrollSpy = spyOn<any>(component, 'scrollToBottom');
+    // @ts-expect-error: Accessing protected member in test
+    const scrollSpy = spyOn<MessageListTest>(component as MessageListTest, 'scrollToBottom');
 
     // Trigger ngAfterViewChecked
     component.ngAfterViewChecked();

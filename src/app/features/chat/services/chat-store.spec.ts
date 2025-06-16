@@ -63,7 +63,7 @@ describe('ChatStore', () => {
       service = TestBed.inject(ChatStore);
 
       // Verify a new session was created
-      expect(service.sessions().length).toBe(1);
+      expect(service.$sessions().length).toBe(1);
       expect(storageFacadeMock.setItem).toHaveBeenCalled();
     });
 
@@ -96,13 +96,13 @@ describe('ChatStore', () => {
     });
 
     it('should create a new session', () => {
-      const initialLength = service.sessions().length;
+      const initialLength = service.$sessions().length;
 
       service.createNewSession();
 
-      expect(service.sessions().length).toBe(initialLength + 1);
-      expect(service.sessions()[0].title).toBe('New Chat');
-      expect(service.activeSession()?.id).toBe(service.sessions()[0].id);
+      expect(service.$sessions().length).toBe(initialLength + 1);
+      expect(service.$sessions()[0].title).toBe('New Chat');
+      expect(service.activeSession()?.id).toBe(service.$sessions()[0].id);
       expect(storageFacadeMock.setItem).toHaveBeenCalled();
     });
 
@@ -146,12 +146,12 @@ describe('ChatStore', () => {
       storageFacadeMock.getItem.and.returnValue(mockSessions);
       service = TestBed.inject(ChatStore);
 
-      const initialLength = service.sessions().length;
+      const initialLength = service.$sessions().length;
 
       service.deleteSession('2');
 
-      expect(service.sessions().length).toBe(initialLength - 1);
-      expect(service.sessions().find(s => s.id === '2')).toBeUndefined();
+      expect(service.$sessions().length).toBe(initialLength - 1);
+      expect(service.$sessions().find(s => s.id === '2')).toBeUndefined();
       expect(storageFacadeMock.setItem).toHaveBeenCalled();
     });
 
@@ -162,7 +162,7 @@ describe('ChatStore', () => {
       });
 
       // Verify a new session was created
-      expect(service.sessions().length).toBe(1);
+      expect(service.$sessions().length).toBe(1);
     });
 
     it('should update session title', () => {
@@ -185,7 +185,7 @@ describe('ChatStore', () => {
 
       service.updateSessionTitle('1', newTitle);
 
-      const updatedSession = service.sessions().find(s => s.id === '1');
+      const updatedSession = service.$sessions().find(s => s.id === '1');
       expect(updatedSession?.title).toBe(newTitle);
       expect(storageFacadeMock.setItem).toHaveBeenCalled();
     });
@@ -217,7 +217,7 @@ describe('ChatStore', () => {
       service.createNewSession();
 
       // Mock the generate method to not complete immediately
-      ollamaApiMock.generate.and.returnValue(new Observable(observer => {
+      ollamaApiMock.generate.and.returnValue(new Observable(() => {
         // Don't complete the observable yet
       }));
 
@@ -252,7 +252,6 @@ describe('ChatStore', () => {
 
       // Ensure we're using a new session with default title
       service.createNewSession();
-      const sessionId = service.activeSession()?.id as string;
 
       service.sendMessage(userMessage).subscribe();
 
@@ -292,16 +291,16 @@ describe('ChatStore', () => {
       const userMessage = 'Hello, AI!';
 
       // Mock the generate method to not complete immediately
-      ollamaApiMock.generate.and.returnValue(new Observable(observer => {
+      ollamaApiMock.generate.and.returnValue(new Observable(() => {
         // Don't complete the observable yet
       }));
 
-      expect(service.isLoading()).toBeFalse();
+      expect(service.$isLoading()).toBeFalse();
 
       service.sendMessage(userMessage).subscribe();
 
       // Loading should be true during API call
-      expect(service.isLoading()).toBeTrue();
+      expect(service.$isLoading()).toBeTrue();
     });
 
     it('should handle loading state during API call', (done) => {
@@ -315,10 +314,10 @@ describe('ChatStore', () => {
       ollamaApiMock.generate.and.returnValue(responseSubject.asObservable());
 
       // Verify loading is false before sending message
-      expect(service.isLoading()).toBeFalse();
+      expect(service.$isLoading()).toBeFalse();
 
       // Send message
-      const subscription = service.sendMessage(userMessage).subscribe({
+      service.sendMessage(userMessage).subscribe({
         next: (response) => {
           // Response should be 'Response'
           expect(response).toBe('Response');
@@ -326,7 +325,7 @@ describe('ChatStore', () => {
         complete: () => {
           // After a small delay, loading should be false after API call completes
           setTimeout(() => {
-            expect(service.isLoading()).toBeFalse();
+            expect(service.$isLoading()).toBeFalse();
             done();
           }, 0);
         }
@@ -334,7 +333,7 @@ describe('ChatStore', () => {
 
       // After a small delay, loading should be true during API call
       setTimeout(() => {
-        expect(service.isLoading()).toBeTrue();
+        expect(service.$isLoading()).toBeTrue();
 
         // Complete the API call
         responseSubject.next('Response');

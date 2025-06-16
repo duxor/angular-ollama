@@ -17,7 +17,10 @@
   <div class="flex-1 overflow-y-auto py-2 md:py-3 lg:py-4 px-3 md:px-4 lg:px-5 space-y-2 md:space-y-3 lg:space-y-4">
     @for (session of sessions(); track session.id) {
       <div 
+        tabindex="0"
         (click)="setActiveSession.emit(session.id)"
+        (keydown.enter)="setActiveSession.emit(session.id)"
+        (keydown.space)="setActiveSession.emit(session.id)"
         class="flex items-center justify-between p-2 md:p-3 lg:p-4 rounded-lg cursor-pointer group"
         [class.bg-gray-700]="activeSessionId() === session.id"
         [class.hover:bg-gray-700]="activeSessionId() !== session.id"

@@ -31,7 +31,7 @@ export class MessageList implements AfterViewChecked {
       if (container) {
         container.nativeElement.scrollTop = container.nativeElement.scrollHeight;
       }
-    } catch (err) {
+    } catch {
       // ignore silently if the element is not available
     }
   }

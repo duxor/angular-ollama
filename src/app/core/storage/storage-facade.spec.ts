@@ -59,9 +59,9 @@ describe('StorageFacade', () => {
 
     it('should handle errors when storing data', () => {
       const key = 'testKey';
-      // Use any type to avoid TypeScript errors with circular references
-      const value: any = { circular: null };
-      value.circular = value; // Create circular reference that can't be stringified
+      // Use Record<string, unknown> type to avoid TypeScript errors with circular references
+      const value: Record<string, unknown> = { circular: null };
+      value['circular'] = value; // Create circular reference that can't be stringified
 
       // Mock console.error to prevent actual logging during test
       spyOn(console, 'error');
@@ -85,7 +85,7 @@ describe('StorageFacade', () => {
 
       localStorageSpy.getItem.and.returnValue(serializedValue);
 
-      const result = service.getItem<typeof value>(key, null as any);
+      const result = service.getItem<typeof value | null>(key, null);
 
       expect(result).toEqual(value);
       expect(localStorageSpy.getItem).toHaveBeenCalledWith(key);

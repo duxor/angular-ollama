@@ -14,7 +14,7 @@ export class OllamaApi {
   private readonly ollamaStore = inject(OllamaStore);
 
   getAvailableModels(): Observable<string[]> {
-    return this.httpClient.get<{ models: Array<{ name: string }> }>(this.ollamaTagsUrl)
+    return this.httpClient.get<{ models: { name: string }[] }>(this.ollamaTagsUrl)
       .pipe(
         map(response => response.models.map(model => model.name))
       );

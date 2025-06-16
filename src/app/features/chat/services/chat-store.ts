@@ -15,23 +15,24 @@ export class ChatStore {
   private readonly localStorageKey = 'nexusChat_sessions';
 
   private readonly $activeSessionId = signal<string | null>(null);
-  readonly $sessions = signal<ChatSession[]>(this.loadSessions());
+  readonly sessions = signal<ChatSession[]>(this.loadSessions());
+  readonly $sessions = this.sessions;
   readonly $isLoading = signal<boolean>(false);
+
+  constructor() {
+    if (this.sessions().length === 0) {
+      this.createNewSession();
+      return;
+    }
+    this.$activeSessionId.set(this.sessions()[0].id);
+  }
 
   activeSession() {
     const id = this.$activeSessionId();
     if (!id) {
       return null;
     }
-    return this.$sessions().find(session => session.id === id) || null;
-  }
-
-  constructor() {
-    if (this.$sessions().length === 0) {
-      this.createNewSession();
-      return;
-    }
-    this.$activeSessionId.set(this.$sessions()[0].id);
+    return this.sessions().find(session => session.id === id) || null;
   }
 
   createNewSession(): void {
@@ -43,7 +44,7 @@ export class ChatStore {
       updatedAt: new Date()
     };
 
-    this.$sessions.update(sessions => [newSession, ...sessions]);
+    this.sessions.update(sessions => [newSession, ...sessions]);
     this.$activeSessionId.set(newSession.id);
     this.saveSessions();
   }
@@ -53,8 +54,8 @@ export class ChatStore {
   }
 
   deleteSession(sessionId: string): void {
-    const updatedSessions = this.$sessions().filter(session => session.id !== sessionId);
-    this.$sessions.set(updatedSessions);
+    const updatedSessions = this.sessions().filter(session => session.id !== sessionId);
+    this.sessions.set(updatedSessions);
 
     if (this.$activeSessionId() === sessionId) {
       this.$activeSessionId.set(updatedSessions.length > 0 ? updatedSessions[0].id : null);
@@ -68,7 +69,7 @@ export class ChatStore {
   }
 
   updateSessionTitle(sessionId: string, title: string): void {
-    this.$sessions.update(sessions =>
+    this.sessions.update(sessions =>
       sessions.map(session => {
         if (session.id === sessionId) {
           return {
@@ -116,7 +117,7 @@ export class ChatStore {
       updatedSession.title = title;
     }
 
-    this.$sessions.update(sessions =>
+    this.sessions.update(sessions =>
       sessions.map(session => 
         session.id === updatedSession.id ? updatedSession : session
       )
@@ -140,7 +141,7 @@ export class ChatStore {
           updatedAt: new Date()
         };
 
-        this.$sessions.update(sessions =>
+        this.sessions.update(sessions =>
           sessions.map(session => 
             session.id === sessionWithResponse.id ? sessionWithResponse : session
           )
@@ -158,7 +159,7 @@ export class ChatStore {
   }
 
   private saveSessions(): void {
-    this.storageFacade.setItem(this.localStorageKey, this.$sessions());
+    this.storageFacade.setItem(this.localStorageKey, this.sessions());
   }
 
   private prepareConversationPrompt(messages: ChatMessage[]): string {

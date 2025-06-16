@@ -47,8 +47,8 @@ describe('AITypingIndicator', () => {
     });
 
     // Access the protected property using type assertion
-    const comp = component as any;
-    expect(comp.currentTime).toBe(expectedTime);
+    // @ts-expect-error: Accessing protected member in test
+    expect(component.currentTime).toBe(expectedTime);
 
     // Check that the time appears in the template
     const timeElement = fixture.nativeElement.querySelector('.opacity-70');
