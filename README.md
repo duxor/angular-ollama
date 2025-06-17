@@ -83,6 +83,16 @@ This application connects to a local Ollama instance running on `http://localhos
 2. You have downloaded at least one model (for example `mistral` or `llama3.1`)
 3. Your firewall allows connections to port 11434
 
+#### Auto-detection of Available Models
+
+The application automatically detects all locally available Ollama models by querying the Ollama API endpoint at `http://localhost:11434/api/tags`. When the application starts, it:
+
+1. Fetches the list of all models you have downloaded locally
+2. Populates the model selection dropdown with these models
+3. Either selects your previously used model or defaults to the first available model
+
+This means you don't need to manually configure which models are available - just download models using the Ollama CLI (`ollama pull <model-name>`), and they will automatically appear in the application.
+
 ### Troubleshooting Ollama Connection
 
 If you encounter issues connecting to Ollama:
