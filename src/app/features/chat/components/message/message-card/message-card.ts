@@ -1,18 +1,18 @@
 import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MarkdownComponent, provideMarkdown } from 'ngx-markdown';
-import { ChatMessage } from '../../../models/chat-message';
+import { Message } from '../../../models/message';
 
 @Component({
-  selector: 'nexus-message-item',
+  selector: 'nexus-message-card',
   standalone: true,
   imports: [CommonModule, MarkdownComponent],
   providers: [provideMarkdown()],
-  templateUrl: './message-item.html',
-  styleUrl: './message-item.css'
+  templateUrl: './message-card.html',
+  styleUrl: './message-card.css'
 })
-export class MessageItem {
-  message = input.required<ChatMessage>();
+export class MessageCard {
+  message = input.required<Message>();
 
   get isUser(): boolean {
     return this.message().role === 'user';

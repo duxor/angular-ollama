@@ -1,22 +1,22 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { MessageItem } from './message-item';
-import { ChatMessage } from '../../../models/chat-message';
+import { MessageCard } from './message-card';
+import { Message } from '../../../models/message';
 import { provideMarkdown } from 'ngx-markdown';
 import { provideZonelessChangeDetection } from '@angular/core';
 
-describe('MessageItem', () => {
-  let component: MessageItem;
-  let fixture: ComponentFixture<MessageItem>;
+describe('MessageCard', () => {
+  let component: MessageCard;
+  let fixture: ComponentFixture<MessageCard>;
 
-  const mockUserMessage: ChatMessage = {
+  const mockUserMessage: Message = {
     id: '1',
     content: 'Hello, this is a test message',
     role: 'user',
     timestamp: new Date('2023-01-01T12:30:00')
   };
 
-  const mockAssistantMessage: ChatMessage = {
+  const mockAssistantMessage: Message = {
     id: '2',
     content: 'Hello, I am the assistant',
     role: 'assistant',
@@ -25,7 +25,7 @@ describe('MessageItem', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MessageItem],
+      imports: [MessageCard],
       providers: [
         provideMarkdown(),
         provideZonelessChangeDetection(),
@@ -35,7 +35,7 @@ describe('MessageItem', () => {
   });
 
   it('should create', () => {
-    fixture = TestBed.createComponent(MessageItem);
+    fixture = TestBed.createComponent(MessageCard);
     component = fixture.componentInstance;
 
     // Set the required input signal
@@ -46,7 +46,7 @@ describe('MessageItem', () => {
   });
 
   it('should identify user messages correctly', () => {
-    fixture = TestBed.createComponent(MessageItem);
+    fixture = TestBed.createComponent(MessageCard);
     component = fixture.componentInstance;
 
     // Set user message
@@ -63,7 +63,7 @@ describe('MessageItem', () => {
   });
 
   it('should format time correctly', () => {
-    fixture = TestBed.createComponent(MessageItem);
+    fixture = TestBed.createComponent(MessageCard);
     component = fixture.componentInstance;
 
     // Set message with known timestamp
@@ -83,7 +83,7 @@ describe('MessageItem', () => {
   });
 
   it('should render user message with correct styling', () => {
-    fixture = TestBed.createComponent(MessageItem);
+    fixture = TestBed.createComponent(MessageCard);
     component = fixture.componentInstance;
 
     fixture.componentRef.setInput('message', mockUserMessage);
@@ -97,7 +97,7 @@ describe('MessageItem', () => {
   });
 
   it('should render assistant message with correct styling', () => {
-    fixture = TestBed.createComponent(MessageItem);
+    fixture = TestBed.createComponent(MessageCard);
     component = fixture.componentInstance;
 
     fixture.componentRef.setInput('message', mockAssistantMessage);
