@@ -46,23 +46,22 @@ describe('OllamaApi', () => {
     req.flush(mockModels);
   });
 
-  it('should generate text with the specified model', () => {
-    const mockResponse = '{"response":"Hello"}';
-    const prompt = 'Say hello';
+  it('should chat with the specified model', () => {
+    const mockResponse = '{"message":{"content":"Hello"}}';
+    const messages = [{ role: 'user', content: 'Say hello' }];
     const model = 'llama3.1';
 
-    service.generate(prompt, model).subscribe(response => {
+    service.chat(messages, model).subscribe((response: string) => {
       expect(response).toBe('Hello');
     });
 
-    const req = httpMock.expectOne('http://localhost:11434/api/generate');
+    const req = httpMock.expectOne('http://localhost:11434/api/chat');
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual({
       model: 'llama3.1',
-      prompt: 'Please format your response using markdown syntax for better readability. Say hello',
+      messages: messages,
       options: {
-        temperature: 0.7,
-        num_predict: 1024
+        temperature: 0.7
       }
     });
     req.flush(mockResponse);
