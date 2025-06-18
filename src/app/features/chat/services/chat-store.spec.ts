@@ -1,18 +1,18 @@
 import { TestBed } from '@angular/core/testing';
 import { ChatStore } from './chat-store';
-import { OllamaApi } from '../../../core/ollama/ollama-api';
+import { OllamaFacade } from '../../../core/ollama/ollama-facade';
 import { StorageFacade } from '../../../core/storage/storage-facade';
 import { Observable, of, Subject } from 'rxjs';
-import { ChatSession } from '../models/chat-session';
+import { Session } from '../models/session';
 import { provideZonelessChangeDetection } from '@angular/core';
 
 describe('ChatStore', () => {
   let service: ChatStore;
-  let ollamaApiMock: jasmine.SpyObj<OllamaApi>;
+  let ollamaFacadeMock: jasmine.SpyObj<OllamaFacade>;
   let storageFacadeMock: jasmine.SpyObj<StorageFacade>;
 
   // Mock data
-  const mockSessions: ChatSession[] = [
+  const mockSessions: Session[] = [
     {
       id: '1',
       title: 'First Chat',
@@ -31,18 +31,18 @@ describe('ChatStore', () => {
 
   beforeEach(() => {
     // Create mock services
-    ollamaApiMock = jasmine.createSpyObj('OllamaApi', ['generate']);
+    ollamaFacadeMock = jasmine.createSpyObj('OllamaFacade', ['chat']);
     storageFacadeMock = jasmine.createSpyObj('StorageFacade', ['getItem', 'setItem']);
 
     // Configure default mock behavior
-    ollamaApiMock.generate.and.returnValue(of('Mock response'));
+    ollamaFacadeMock.chat.and.returnValue(of('Mock response'));
     storageFacadeMock.getItem.and.returnValue([]);
 
     TestBed.configureTestingModule({
       providers: [
         provideZonelessChangeDetection(),
         ChatStore,
-        { provide: OllamaApi, useValue: ollamaApiMock },
+        { provide: OllamaFacade, useValue: ollamaFacadeMock },
         { provide: StorageFacade, useValue: storageFacadeMock }
       ]
     });
@@ -77,7 +77,7 @@ describe('ChatStore', () => {
         providers: [
           provideZonelessChangeDetection(),
           ChatStore,
-          { provide: OllamaApi, useValue: ollamaApiMock },
+          { provide: OllamaFacade, useValue: ollamaFacadeMock },
           { provide: StorageFacade, useValue: storageFacadeMock }
         ]
       });
@@ -113,7 +113,7 @@ describe('ChatStore', () => {
         providers: [
           provideZonelessChangeDetection(),
           ChatStore,
-          { provide: OllamaApi, useValue: ollamaApiMock },
+          { provide: OllamaFacade, useValue: ollamaFacadeMock },
           { provide: StorageFacade, useValue: storageFacadeMock }
         ]
       });
@@ -137,7 +137,7 @@ describe('ChatStore', () => {
         providers: [
           provideZonelessChangeDetection(),
           ChatStore,
-          { provide: OllamaApi, useValue: ollamaApiMock },
+          { provide: OllamaFacade, useValue: ollamaFacadeMock },
           { provide: StorageFacade, useValue: storageFacadeMock }
         ]
       });
@@ -172,7 +172,7 @@ describe('ChatStore', () => {
         providers: [
           provideZonelessChangeDetection(),
           ChatStore,
-          { provide: OllamaApi, useValue: ollamaApiMock },
+          { provide: OllamaFacade, useValue: ollamaFacadeMock },
           { provide: StorageFacade, useValue: storageFacadeMock }
         ]
       });
@@ -199,7 +199,7 @@ describe('ChatStore', () => {
         providers: [
           provideZonelessChangeDetection(),
           ChatStore,
-          { provide: OllamaApi, useValue: ollamaApiMock },
+          { provide: OllamaFacade, useValue: ollamaFacadeMock },
           { provide: StorageFacade, useValue: storageFacadeMock }
         ]
       });
@@ -216,8 +216,8 @@ describe('ChatStore', () => {
       // Create a new session with no messages
       service.createNewSession();
 
-      // Mock the generate method to not complete immediately
-      ollamaApiMock.generate.and.returnValue(new Observable(() => {
+      // Mock the chat method to not complete immediately
+      ollamaFacadeMock.chat.and.returnValue(new Observable(() => {
         // Don't complete the observable yet
       }));
 
@@ -229,13 +229,13 @@ describe('ChatStore', () => {
       expect(service.activeSession()?.messages[0].role).toBe('user');
 
       // Verify API was called
-      expect(ollamaApiMock.generate).toHaveBeenCalled();
+      expect(ollamaFacadeMock.chat).toHaveBeenCalled();
     });
 
     it('should add AI response when API returns', () => {
       const userMessage = 'Hello, AI!';
       const aiResponse = 'Hello, human!';
-      ollamaApiMock.generate.and.returnValue(of(aiResponse));
+      ollamaFacadeMock.chat.and.returnValue(of(aiResponse));
 
       service.sendMessage(userMessage).subscribe();
 
@@ -248,7 +248,7 @@ describe('ChatStore', () => {
 
     it('should update session title on first message', () => {
       const userMessage = 'This is a test message that will become the title';
-      ollamaApiMock.generate.and.returnValue(of('Response'));
+      ollamaFacadeMock.chat.and.returnValue(of('Response'));
 
       // Ensure we're using a new session with default title
       service.createNewSession();
@@ -261,7 +261,7 @@ describe('ChatStore', () => {
 
     it('should truncate long titles', () => {
       const longMessage = 'This is a very long message that should be truncated when used as a title for the chat session';
-      ollamaApiMock.generate.and.returnValue(of('Response'));
+      ollamaFacadeMock.chat.and.returnValue(of('Response'));
 
       // Ensure we're using a new session with default title
       service.createNewSession();
@@ -279,19 +279,19 @@ describe('ChatStore', () => {
 
       // Should return empty observable
       let result: string | undefined;
-      service.sendMessage('test').subscribe(res => {
+      service.sendMessage('test').subscribe((res: string) => {
         result = res;
       });
 
       expect(result).toBe('');
-      expect(ollamaApiMock.generate).not.toHaveBeenCalled();
+      expect(ollamaFacadeMock.chat).not.toHaveBeenCalled();
     });
 
     it('should set loading state during API call', () => {
       const userMessage = 'Hello, AI!';
 
-      // Mock the generate method to not complete immediately
-      ollamaApiMock.generate.and.returnValue(new Observable(() => {
+      // Mock the chat method to not complete immediately
+      ollamaFacadeMock.chat.and.returnValue(new Observable(() => {
         // Don't complete the observable yet
       }));
 
@@ -311,14 +311,14 @@ describe('ChatStore', () => {
 
       // Use a subject to control when the API call completes
       const responseSubject = new Subject<string>();
-      ollamaApiMock.generate.and.returnValue(responseSubject.asObservable());
+      ollamaFacadeMock.chat.and.returnValue(responseSubject.asObservable());
 
       // Verify loading is false before sending message
       expect(service.$isLoading()).toBeFalse();
 
       // Send message
       service.sendMessage(userMessage).subscribe({
-        next: (response) => {
+        next: (response: string) => {
           // Response should be 'Response'
           expect(response).toBe('Response');
         },
