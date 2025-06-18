@@ -107,7 +107,7 @@ If you encounter issues connecting to Ollama:
 This project follows the new naming convention introduced with Angular 20:
 
 1. **File Naming**: Uses kebab-case for all files (e.g., `chat-page.ts` instead of `chat.page.ts` or `chat-page.component.ts`)
-2. **Component Structure**: Standalone components with co-located files (HTML, CSS, TS in the same directory)
+2. **Component Structure**: Standalone components are used
 3. **Simplified Imports**: No module declarations for standalone components
 4. **Signal-based State Management**: Uses Angular's signal API for state management, including:
    - Input signals (`input()`) instead of `@Input()` decorators
@@ -120,14 +120,20 @@ Example of the new naming convention:
 features/
 └── chat/
     └── components/
-        ├── message/
-        │   ├── message-item/
-        │   │   ├── message-item.ts
-        │   │   ├── message-item.html
-        │   │   └── message-item.css
-        │   └── message-list/
-        └── session/
-            └── session-form/
+        ├── conversation/
+        │   ├── conversation-card/
+        │   │   ├── conversation-card.ts
+        │   │   ├── conversation-card.html
+        │   │   └── conversation-card.css
+        │   └── conversation-list/
+        ├── layout/
+        │   ├── chat-panel/
+        │   └── chat-sidebar/
+        └── message/
+            ├── message-card/
+            ├── message-feed/
+            ├── message-form/
+            └── welcome-section/
 ```
 
 ## Project Structure
@@ -139,6 +145,8 @@ src/                       # Source code
 │   │   ├── ollama/        # Ollama API integration
 │   │   │   ├── ollama-api.spec.ts      # Tests for Ollama API
 │   │   │   ├── ollama-api.ts           # API client for Ollama
+│   │   │   ├── ollama-facade.spec.ts   # Tests for Ollama facade
+│   │   │   ├── ollama-facade.ts        # Facade for Ollama services
 │   │   │   ├── ollama-store.spec.ts    # Tests for Ollama store
 │   │   │   └── ollama-store.ts         # State management for Ollama models
 │   │   └── storage/       # Storage services
@@ -147,36 +155,57 @@ src/                       # Source code
 │   ├── features/          # Feature modules
 │   │   └── chat/          # Chat feature
 │   │       ├── components/# UI components
+│   │       │   ├── conversation/# Conversation-related components
+│   │       │   │   ├── conversation-card/  # Individual conversation component
+│   │       │   │   │   ├── conversation-card.css
+│   │       │   │   │   ├── conversation-card.html
+│   │       │   │   │   ├── conversation-card.spec.ts
+│   │       │   │   │   └── conversation-card.ts
+│   │       │   │   └── conversation-list/  # List of conversations component
+│   │       │   │       ├── conversation-list.css
+│   │       │   │       ├── conversation-list.html
+│   │       │   │       ├── conversation-list.spec.ts
+│   │       │   │       └── conversation-list.ts
+│   │       │   ├── layout/  # Layout components
+│   │       │   │   ├── chat-panel/  # Main content panel
+│   │       │   │   │   ├── chat-panel.css
+│   │       │   │   │   ├── chat-panel.html
+│   │       │   │   │   ├── chat-panel.spec.ts
+│   │       │   │   │   └── chat-panel.ts
+│   │       │   │   └── chat-sidebar/  # Sidebar component
+│   │       │   │       ├── chat-sidebar.css
+│   │       │   │       ├── chat-sidebar.html
+│   │       │   │       ├── chat-sidebar.spec.ts
+│   │       │   │       └── chat-sidebar.ts
 │   │       │   ├── message/# Message-related components
-│   │       │   │   ├── ai-typing-indicator/  # Typing indicator component
-│   │       │   │   │   ├── ai-typing-indicator.css
-│   │       │   │   │   ├── ai-typing-indicator.html
-│   │       │   │   │   ├── ai-typing-indicator.spec.ts
-│   │       │   │   │   └── ai-typing-indicator.ts
-│   │       │   │   ├── message-item/  # Individual message component
-│   │       │   │   │   ├── message-item.css
-│   │       │   │   │   ├── message-item.html
-│   │       │   │   │   ├── message-item.spec.ts
-│   │       │   │   │   └── message-item.ts
-│   │       │   │   └── message-list/  # List of messages component
-│   │       │   │       ├── message-list.css
-│   │       │   │       ├── message-list.html
-│   │       │   │       ├── message-list.spec.ts
-│   │       │   │       └── message-list.ts
-│   │       │   └── session/# Session-related components
-│   │       │       ├── session-form/  # Form for creating/editing sessions
-│   │       │       │   ├── session-form.css
-│   │       │       │   ├── session-form.html
-│   │       │       │   ├── session-form.spec.ts
-│   │       │       │   └── session-form.ts
-│   │       │       └── session-list/  # List of sessions component
-│   │       │           ├── session-list.css
-│   │       │           ├── session-list.html
-│   │       │           ├── session-list.spec.ts
-│   │       │           └── session-list.ts
+│   │       │       ├── ai-typing-indicator/  # Typing indicator component
+│   │       │       │   ├── ai-typing-indicator.css
+│   │       │       │   ├── ai-typing-indicator.html
+│   │       │       │   ├── ai-typing-indicator.spec.ts
+│   │       │       │   └── ai-typing-indicator.ts
+│   │       │       ├── message-card/  # Individual message component
+│   │       │       │   ├── message-card.css
+│   │       │       │   ├── message-card.html
+│   │       │       │   ├── message-card.spec.ts
+│   │       │       │   └── message-card.ts
+│   │       │       ├── message-feed/  # List of messages component
+│   │       │       │   ├── message-feed.css
+│   │       │       │   ├── message-feed.html
+│   │       │       │   ├── message-feed.spec.ts
+│   │       │       │   └── message-feed.ts
+│   │       │       ├── message-form/  # Form for creating messages
+│   │       │       │   ├── message-form.css
+│   │       │       │   ├── message-form.html
+│   │       │       │   ├── message-form.spec.ts
+│   │       │       │   └── message-form.ts
+│   │       │   └── welcome-section/  # Welcome section component
+│   │       │       ├── welcome-section.css
+│   │       │       ├── welcome-section.html
+│   │       │       ├── welcome-section.spec.ts
+│   │       │       └── welcome-section.ts
 │   │       ├── models/    # Data models
-│   │       │   ├── chat-message.ts    # Message model
-│   │       │   └── chat-session.ts    # Session model
+│   │       │   ├── message.ts    # Message model
+│   │       │   └── session.ts    # Session model
 │   │       ├── pages/     # Page components
 │   │       │   └── chat-page/         # Main chat page
 │   │       │       ├── chat-page.css
@@ -201,7 +230,7 @@ src/                       # Source code
 
 The project includes comprehensive unit tests for all components and services, including:
 
-- Component tests for all UI components (MessageItem, MessageList, SessionForm, SessionList, etc.)
+- Component tests for all UI components (MessageCard, MessageFeed, MessageForm, ConversationList, etc.)
 - Service tests for OllamaApi, ChatStore, and other services
 - Tests for signal-based inputs and outputs
 - Tests for the AI typing indicator
