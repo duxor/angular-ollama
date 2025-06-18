@@ -1,16 +1,17 @@
-import { Component, ElementRef, AfterViewInit, signal, output, viewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, output, signal, viewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'nexus-session-form',
+  selector: 'nexus-message-form',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './session-form.html',
-  styleUrl: './session-form.css'
+  templateUrl: './message-form.html',
+  styleUrl: './message-form.css'
 })
-export class SessionForm implements AfterViewInit {
+export class MessageForm implements AfterViewInit {
   sendMessage = output<string>();
+
   readonly messageInput = viewChild<ElementRef<HTMLInputElement>>('messageInput');
 
   $message = signal('');

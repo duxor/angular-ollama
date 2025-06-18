@@ -1,28 +1,28 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
-import { SessionForm } from './session-form';
+import { MessageForm } from './message-form';
 import { provideZonelessChangeDetection, signal } from '@angular/core';
 
 // Type for testing private methods
-interface SessionFormTest extends SessionForm {
+interface SessionFormTest extends MessageForm {
   focusInput(): void;
 }
 
-describe('SessionForm', () => {
-  let component: SessionForm;
-  let fixture: ComponentFixture<SessionForm>;
+describe('MessageForm', () => {
+  let component: MessageForm;
+  let fixture: ComponentFixture<MessageForm>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SessionForm, FormsModule],
+      imports: [MessageForm, FormsModule],
       providers: [
         provideZonelessChangeDetection(),
       ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(SessionForm);
+    fixture = TestBed.createComponent(MessageForm);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
