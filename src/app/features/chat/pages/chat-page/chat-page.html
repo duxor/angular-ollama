@@ -1,61 +1,36 @@
 <div class="flex h-screen bg-gray-900 text-white overflow-hidden">
-  <!--#region Sidebar -->
-  <div class="w-64 md:w-72 lg:w-80 xl:w-96 bg-gray-800 border-r border-gray-700 flex flex-col">
-    <!--#region Brand -->
-    <div class="p-4 border-b border-gray-700">
-      <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">NexusChat</h1>
-      <p class="text-xs md:text-sm text-gray-400">Unleashing AI's Potential Together</p>
-    </div>
-    <!--#endregion Brand -->
-
-    <nexus-session-list
-      class="flex-1"
-      [sessions]="chatService.$sessions()"
+  <nexus-chat-sidebar>
+    <nexus-conversation-list
+      sidebar-body
+      [conversations]="chatService.$sessions()"
       [activeSessionId]="chatService.activeSession()?.id ?? null"
       (setActiveSession)="setActiveSession($event)"
       (deleteSession)="deleteSession($event)"
       (createNewSession)="createNewSession()"
     />
 
-    <!--#region Model Selection -->
-    <div class="p-3 border-t border-gray-700">
-      <select 
-        id="modelSelect"
-        class="w-full bg-gray-700 border border-gray-600 rounded-md py-1 px-2 text-sm md:text-base lg:text-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
-        [ngModel]="$selectedModel()"
-        (ngModelChange)="onModelChange($event)"
-      >
-        @for (model of $availableModels(); track model) {
-          <option [value]="model">{{ model }}</option>
-        }
-      </select>
-    </div>
-    <!--#endregion Model Selection -->
-  </div>
-  <!--#endregion Sidebar -->
+    <select
+      sidebar-footer
+      class="w-full bg-gray-700 border border-gray-600 rounded-md py-1 px-2 text-sm md:text-base lg:text-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+      [ngModel]="$selectedModel()"
+      (ngModelChange)="onModelChange($event)"
+    >
+      @for (model of $availableModels(); track model) {
+        <option [value]="model">{{ model }}</option>
+      }
+    </select>
+  </nexus-chat-sidebar>
 
-  <!--#region Main Content -->
-  <div class="flex-1 flex flex-col">
-    <!--#region Header -->
-    <div class="h-14 md:h-16 lg:h-20 border-b border-gray-700 flex items-center px-6">
-      <h2 class="text-lg md:text-xl lg:text-2xl font-medium">{{ chatService.activeSession()?.title || 'New Chat' }}</h2>
-    </div>
-    <!--#endregion Header -->
+  <nexus-chat-panel class="flex-1" [title]="chatService.activeSession()?.title || 'New Chat'">
+    <nexus-message-feed
+      class="flex-1 overflow-y-auto"
+      [messages]="chatService.activeSession()?.messages || []"
+      [isLoading]="chatService.$isLoading()"
+      (sendMessage)="sendMessage($event)"
+    />
 
-    <!--#region Chat Area -->
-    <div class="flex-1 overflow-hidden flex flex-col">
-      <nexus-message-list 
-        class="flex-1 overflow-y-auto" 
-        [messages]="chatService.activeSession()?.messages || []"
-        [isLoading]="chatService.$isLoading()"
-        (sendMessage)="sendMessage($event)"
-      />
-
-      <div class="p-4 border-t border-gray-700">
-        <nexus-session-form (sendMessage)="sendMessage($event)" />
-      </div>
+    <div class="p-4 border-t border-gray-700">
+      <nexus-message-form (sendMessage)="sendMessage($event)" />
     </div>
-    <!--#endregion Chat Area -->
-  </div>
-  <!--#endregion Main Content -->
+  </nexus-chat-panel>
 </div>
