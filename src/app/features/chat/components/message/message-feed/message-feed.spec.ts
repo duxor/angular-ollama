@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { MessageList } from './message-list';
-import { ChatMessage } from '../../../models/chat-message';
+import { MessageFeed } from './message-feed';
+import { Message } from '../../../models/message';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { AITypingIndicator } from '../ai-typing-indicator/ai-typing-indicator';
-import { MessageItem } from '../message-item/message-item';
+import { MessageCard } from '../message-card/message-card';
 
-describe('MessageList', () => {
-  let component: MessageList;
-  let fixture: ComponentFixture<MessageList>;
+describe('MessageFeed', () => {
+  let component: MessageFeed;
+  let fixture: ComponentFixture<MessageFeed>;
 
-  const mockMessages: ChatMessage[] = [
+  const mockMessages: Message[] = [
     {
       id: '1',
       content: 'Hello, this is a test message',
@@ -27,27 +27,31 @@ describe('MessageList', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MessageList],
-      providers: [
-        provideZonelessChangeDetection(),
-      ]
+      imports: [MessageFeed],
+      providers: [provideZonelessChangeDetection()]
     })
     .compileComponents();
   });
 
   it('should create', () => {
-    fixture = TestBed.createComponent(MessageList);
+    fixture = TestBed.createComponent(MessageFeed);
     component = fixture.componentInstance;
+
+    // Set required inputs
+    fixture.componentRef.setInput('messages', []);
+    fixture.componentRef.setInput('isLoading', false);
+
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
   it('should display welcome message when no messages', () => {
-    fixture = TestBed.createComponent(MessageList);
+    fixture = TestBed.createComponent(MessageFeed);
     component = fixture.componentInstance;
 
-    // Set empty messages array
+    // Set empty messages array and loading state
     fixture.componentRef.setInput('messages', []);
+    fixture.componentRef.setInput('isLoading', false);
     fixture.detectChanges();
 
     const welcomeMessage = fixture.debugElement.query(By.css('h2'));
@@ -56,19 +60,20 @@ describe('MessageList', () => {
   });
 
   it('should display messages when available', () => {
-    fixture = TestBed.createComponent(MessageList);
+    fixture = TestBed.createComponent(MessageFeed);
     component = fixture.componentInstance;
 
-    // Set messages
+    // Set messages and loading state
     fixture.componentRef.setInput('messages', mockMessages);
+    fixture.componentRef.setInput('isLoading', false);
     fixture.detectChanges();
 
-    const messageItems = fixture.debugElement.queryAll(By.directive(MessageItem));
+    const messageItems = fixture.debugElement.queryAll(By.directive(MessageCard));
     expect(messageItems.length).toBe(2);
   });
 
   it('should display loading indicator when isLoading is true', () => {
-    fixture = TestBed.createComponent(MessageList);
+    fixture = TestBed.createComponent(MessageFeed);
     component = fixture.componentInstance;
 
     // Set messages and loading state
@@ -81,7 +86,7 @@ describe('MessageList', () => {
   });
 
   it('should not display loading indicator when isLoading is false', () => {
-    fixture = TestBed.createComponent(MessageList);
+    fixture = TestBed.createComponent(MessageFeed);
     component = fixture.componentInstance;
 
     // Set messages and loading state
@@ -94,11 +99,12 @@ describe('MessageList', () => {
   });
 
   it('should emit sendMessage event when suggestion is clicked', () => {
-    fixture = TestBed.createComponent(MessageList);
+    fixture = TestBed.createComponent(MessageFeed);
     component = fixture.componentInstance;
 
-    // Set empty messages to show suggestions
+    // Set empty messages to show suggestions and loading state
     fixture.componentRef.setInput('messages', []);
+    fixture.componentRef.setInput('isLoading', false);
     fixture.detectChanges();
 
     // Spy on the output signal
@@ -111,17 +117,32 @@ describe('MessageList', () => {
     expect(sendMessageSpy).toHaveBeenCalled();
   });
 
-  it('should attempt to scroll to bottom after view checked', () => {
-    fixture = TestBed.createComponent(MessageList);
+  it('should attempt to scroll to bottom after changes', () => {
+    fixture = TestBed.createComponent(MessageFeed);
     component = fixture.componentInstance;
 
+    // Set required inputs
+    fixture.componentRef.setInput('messages', []);
+    fixture.componentRef.setInput('isLoading', false);
+    fixture.detectChanges();
+
     // Spy on the scrollToBottom method
-    // @ts-expect-error: Accessing protected member in test
-    const scrollSpy = spyOn<MessageListTest>(component as MessageListTest, 'scrollToBottom');
+    const scrollSpy = spyOn<any>(component, 'scrollToBottom');
 
-    // Trigger ngAfterViewChecked
-    component.ngAfterViewChecked();
+    // Mock requestAnimationFrame to execute callback immediately
+    const originalRAF = window.requestAnimationFrame;
+    window.requestAnimationFrame = (cb: FrameRequestCallback): number => {
+      cb(0);
+      return 0;
+    };
 
+    // Trigger ngOnChanges
+    component.ngOnChanges();
+
+    // Verify scrollToBottom was called
     expect(scrollSpy).toHaveBeenCalled();
+
+    // Restore original requestAnimationFrame
+    window.requestAnimationFrame = originalRAF;
   });
 });
