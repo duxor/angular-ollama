@@ -1,0 +1,28 @@
+<div class="h-full flex flex-col space-y-2 md:space-y-3 lg:space-y-4">
+  <!--#region New Conversation Button -->
+  <div class="p-3 md:p-4 lg:p-5">
+    <button
+      class="w-full py-2 md:py-3 lg:py-4 px-4 md:px-5 lg:px-6 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg text-white font-medium md:text-lg lg:text-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-200 flex items-center gap-2 md:gap-3 lg:gap-4 shadow-lg shadow-blue-900/20 cursor-pointer"
+      (click)="createNewSession.emit()"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 lg:h-7 lg:w-7" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+      </svg>
+      New Chat
+    </button>
+  </div>
+  <!--#endregion New Conversation Button -->
+
+  <!--#region Conversation List -->
+  <div class="flex-1 overflow-y-auto py-2 md:py-3 lg:py-4 px-3 md:px-4 lg:px-5 space-y-2 md:space-y-3 lg:space-y-4">
+    @for (conversation of conversations(); track conversation.id) {
+      <nexus-conversation-card
+        [session]="conversation"
+        [activeSessionId]="activeSessionId()"
+        (setActiveSession)="setActiveSession.emit($event)"
+        (deleteSession)="deleteSession.emit($event)"
+      />
+    }
+  </div>
+  <!--#endregion Conversation List -->
+</div>

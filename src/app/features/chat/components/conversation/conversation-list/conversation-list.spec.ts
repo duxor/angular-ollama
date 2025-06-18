@@ -1,14 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { SessionList } from './session-list';
-import { ChatSession } from '../../../models/chat-session';
+import { ConversationList } from './conversation-list';
+import { Session } from '../../../models/session';
 import { provideZonelessChangeDetection } from '@angular/core';
 
-describe('SessionList', () => {
-  let component: SessionList;
-  let fixture: ComponentFixture<SessionList>;
+describe('ConversationList', () => {
+  let component: ConversationList;
+  let fixture: ComponentFixture<ConversationList>;
 
-  const mockSessions: ChatSession[] = [
+  const mockSessions: Session[] = [
     {
       id: '1',
       title: 'First Chat',
@@ -27,33 +27,32 @@ describe('SessionList', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SessionList],
-      providers: [
-        provideZonelessChangeDetection(),
-      ]
+      imports: [ConversationList],
+      providers: [provideZonelessChangeDetection()],
     })
     .compileComponents();
   });
 
   it('should create', () => {
-    fixture = TestBed.createComponent(SessionList);
+    fixture = TestBed.createComponent(ConversationList);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('conversations', mockSessions);
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
-  it('should display sessions when provided', () => {
-    fixture = TestBed.createComponent(SessionList);
+  it('should display conversations when provided', () => {
+    fixture = TestBed.createComponent(ConversationList);
     component = fixture.componentInstance;
 
-    // Set sessions
-    fixture.componentRef.setInput('sessions', mockSessions);
+    // Set conversations
+    fixture.componentRef.setInput('conversations', mockSessions);
     fixture.detectChanges();
 
     // Use a more specific selector to get only the session title elements
     const sessionElements = fixture.debugElement.queryAll(By.css('.truncate span'));
 
-    // Verify that we have the correct number of sessions
+    // Verify that we have the correct number of conversations
     expect(sessionElements.length).toBe(2);
 
     // Verify the session titles
@@ -62,11 +61,11 @@ describe('SessionList', () => {
   });
 
   it('should highlight active session', () => {
-    fixture = TestBed.createComponent(SessionList);
+    fixture = TestBed.createComponent(ConversationList);
     component = fixture.componentInstance;
 
-    // Set sessions and active session
-    fixture.componentRef.setInput('sessions', mockSessions);
+    // Set conversations and active session
+    fixture.componentRef.setInput('conversations', mockSessions);
     fixture.componentRef.setInput('activeSessionId', '1');
     fixture.detectChanges();
 
@@ -87,11 +86,11 @@ describe('SessionList', () => {
   });
 
   it('should emit setActiveSession when session is clicked', () => {
-    fixture = TestBed.createComponent(SessionList);
+    fixture = TestBed.createComponent(ConversationList);
     component = fixture.componentInstance;
 
-    // Set sessions
-    fixture.componentRef.setInput('sessions', mockSessions);
+    // Set conversations
+    fixture.componentRef.setInput('conversations', mockSessions);
     fixture.detectChanges();
 
     // Debug: Log the HTML to see what's being rendered
@@ -112,11 +111,11 @@ describe('SessionList', () => {
   });
 
   it('should emit deleteSession when delete button is clicked', () => {
-    fixture = TestBed.createComponent(SessionList);
+    fixture = TestBed.createComponent(ConversationList);
     component = fixture.componentInstance;
 
-    // Set sessions
-    fixture.componentRef.setInput('sessions', mockSessions);
+    // Set conversations
+    fixture.componentRef.setInput('conversations', mockSessions);
     fixture.detectChanges();
 
     // Spy on the output signal
@@ -130,8 +129,11 @@ describe('SessionList', () => {
   });
 
   it('should emit createNewSession when new chat button is clicked', () => {
-    fixture = TestBed.createComponent(SessionList);
+    fixture = TestBed.createComponent(ConversationList);
     component = fixture.componentInstance;
+
+    // Set required input
+    fixture.componentRef.setInput('conversations', mockSessions);
     fixture.detectChanges();
 
     // Spy on the output signal
