@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { AITypingIndicator } from '../ai-typing-indicator/ai-typing-indicator';
 import { Message } from '../../../models/message';
 import { MessageCard } from '../message-card/message-card';
+import { WelcomeSection } from '../../welcome-section/welcome-section';
 
 @Component({
   selector: 'nexus-message-feed',
   standalone: true,
-  imports: [CommonModule, AITypingIndicator, MessageCard],
+  imports: [CommonModule, AITypingIndicator, MessageCard, WelcomeSection],
   templateUrl: './message-feed.html',
   styleUrl: './message-feed.css'
 })
