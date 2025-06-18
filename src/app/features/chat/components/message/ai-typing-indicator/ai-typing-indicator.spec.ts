@@ -24,10 +24,11 @@ describe('AITypingIndicator', () => {
   });
 
   it('should initialize currentTime on init', () => {
-    // Access the protected property using type assertion
-    const comp = component as any;
-    expect(comp.currentTime).toBeDefined();
-    expect(comp.currentTime).not.toBe('');
+    // @ts-expect-error: Accessing protected member in test
+    expect(component.currentTime).toBeDefined();
+
+    // @ts-expect-error: Accessing protected member in test
+    expect(component.currentTime).not.toBe('');
   });
 
   it('should display the current time in the correct format', () => {
