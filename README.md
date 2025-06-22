@@ -138,6 +138,32 @@ features/
 
 ## Project Structure
 
+### Feature-First Architecture Overview
+
+This project follows a feature-first architecture, which organizes code by feature rather than by technical role. This approach:
+
+- **Improves Discoverability**: Related code is grouped together regardless of its technical role
+- **Enhances Modularity**: Features are self-contained and can be developed independently
+- **Simplifies Maintenance**: Changes to a feature affect code in a single location
+
+The high-level structure is:
+
+```
+src/app/
+├── core/              # Shared core functionality (services, APIs)
+│   ├── ollama/        # Ollama API integration
+│   └── storage/       # Storage services
+├── shared/            # Shared components, directives, pipes
+└── features/          # Feature modules
+    └── chat/          # Chat feature
+        ├── components/# UI components organized by functionality
+        ├── models/    # Feature-specific data models
+        ├── pages/     # Page components
+        └── services/  # Feature-specific services
+```
+
+### Detailed Project Structure
+
 ```
 src/                       # Source code
 ├── app/                   # Application code
@@ -178,26 +204,26 @@ src/                       # Source code
 │   │       │   │       ├── chat-sidebar.spec.ts
 │   │       │   │       └── chat-sidebar.ts
 │   │       │   ├── message/# Message-related components
-│   │       │       ├── ai-typing-indicator/  # Typing indicator component
-│   │       │       │   ├── ai-typing-indicator.css
-│   │       │       │   ├── ai-typing-indicator.html
-│   │       │       │   ├── ai-typing-indicator.spec.ts
-│   │       │       │   └── ai-typing-indicator.ts
-│   │       │       ├── message-card/  # Individual message component
-│   │       │       │   ├── message-card.css
-│   │       │       │   ├── message-card.html
-│   │       │       │   ├── message-card.spec.ts
-│   │       │       │   └── message-card.ts
-│   │       │       ├── message-feed/  # List of messages component
-│   │       │       │   ├── message-feed.css
-│   │       │       │   ├── message-feed.html
-│   │       │       │   ├── message-feed.spec.ts
-│   │       │       │   └── message-feed.ts
-│   │       │       ├── message-form/  # Form for creating messages
-│   │       │       │   ├── message-form.css
-│   │       │       │   ├── message-form.html
-│   │       │       │   ├── message-form.spec.ts
-│   │       │       │   └── message-form.ts
+│   │       │   │   ├── ai-typing-indicator/  # Typing indicator component
+│   │       │   │   │   ├── ai-typing-indicator.css
+│   │       │   │   │   ├── ai-typing-indicator.html
+│   │       │   │   │   ├── ai-typing-indicator.spec.ts
+│   │       │   │   │   └── ai-typing-indicator.ts
+│   │       │   │   ├── message-card/  # Individual message component
+│   │       │   │   │   ├── message-card.css
+│   │       │   │   │   ├── message-card.html
+│   │       │   │   │   ├── message-card.spec.ts
+│   │       │   │   │   └── message-card.ts
+│   │       │   │   ├── message-feed/  # List of messages component
+│   │       │   │   │   ├── message-feed.css
+│   │       │   │   │   ├── message-feed.html
+│   │       │   │   │   ├── message-feed.spec.ts
+│   │       │   │   │   └── message-feed.ts
+│   │       │   │   └── message-form/  # Form for creating messages
+│   │       │   │       ├── message-form.css
+│   │       │   │       ├── message-form.html
+│   │       │   │       ├── message-form.spec.ts
+│   │       │   │       └── message-form.ts
 │   │       │   └── welcome-section/  # Welcome section component
 │   │       │       ├── welcome-section.css
 │   │       │       ├── welcome-section.html
