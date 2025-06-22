@@ -287,3 +287,11 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - [Ollama](https://ollama.ai) - For providing the AI capabilities
 - [TailwindCSS](https://tailwindcss.com) - For the styling
 - [ngx-markdown](https://github.com/jfcere/ngx-markdown) - For markdown rendering
+
+# Support
+
+If you need any help with setting up or configuring the environment, feel free to contact me on [LinkedIn](https://www.linkedin.com/in/dusanperisic/).
+
+If you find this project helpful and would like to support its development, you can buy me a coffee:
+
+<a href="https://www.buymeacoffee.com/duxor" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
